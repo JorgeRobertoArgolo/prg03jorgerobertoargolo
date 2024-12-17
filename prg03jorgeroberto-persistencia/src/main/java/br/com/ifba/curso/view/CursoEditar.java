@@ -4,17 +4,42 @@
  */
 package br.com.ifba.curso.view;
 
+import br.com.ifba.curso.CursoSave;
+import br.com.ifba.curso.CursoUpdate;
+import br.com.ifba.curso.entity.Curso;
+import java.awt.event.WindowEvent;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author rober
  */
 public class CursoEditar extends javax.swing.JFrame {
-
+    
+    private CursoListar curso;
+    private long idItemEditar;
+    
     /**
      * Creates new form CursoCadastro
      */
     public CursoEditar() {
         initComponents();
+    }
+    
+    /**
+    * Construtor da classe CursoEditar.
+    * 
+    * <p>Este construtor é utilizado para inicializar a interface gráfica de edição de um curso. Ele recebe
+    * como parâmetros uma instância da classe {@link CursoListar}, que será utilizada para atualizar a tabela
+    * após a edição, e o ID do curso a ser editado, {@code idItemEditar}, que identifica o curso no banco de dados.</p>
+    * 
+    * @param curso A instância da classe {@link CursoListar} que permite atualizar a tabela de cursos.
+    * @param idItemEditar O ID do curso que será editado.
+    */
+    public CursoEditar(CursoListar curso, long idItemEditar) {
+        initComponents();
+        this.curso = curso;
+        this.idItemEditar = idItemEditar;
     }
 
     /**
@@ -26,25 +51,52 @@ public class CursoEditar extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panelMain = new javax.swing.JPanel();
+        btnGroupStatus = new javax.swing.ButtonGroup();
+        btnSalvarAlteracoes = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
+        radioBtnInativo = new javax.swing.JRadioButton();
+        radioBtnAtivo = new javax.swing.JRadioButton();
         lblTextoStatus = new javax.swing.JLabel();
         lblTextoCodigo = new javax.swing.JLabel();
         lblTextoNome = new javax.swing.JLabel();
-        lblTextoId = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
         txtNome = new javax.swing.JTextField();
-        txtId = new javax.swing.JTextField();
         txtCodigo = new javax.swing.JTextField();
-        btnSalvar = new javax.swing.JButton();
-        btnCancelar = new javax.swing.JButton();
-        radioBtnAtivo = new javax.swing.JRadioButton();
-        radioBtnInativo = new javax.swing.JRadioButton();
+        lblTextoEditarCurso = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
-        panelMain.setBackground(new java.awt.Color(0, 51, 255));
+        btnSalvarAlteracoes.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+        btnSalvarAlteracoes.setText("Salvar");
+        btnSalvarAlteracoes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalvarAlteracoesActionPerformed(evt);
+            }
+        });
+
+        btnCancelar.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
+
+        btnGroupStatus.add(radioBtnInativo);
+        radioBtnInativo.setText("Inativo");
+        radioBtnInativo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioBtnInativoActionPerformed(evt);
+            }
+        });
+
+        btnGroupStatus.add(radioBtnAtivo);
+        radioBtnAtivo.setText("Ativo");
 
         lblTextoStatus.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
         lblTextoStatus.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -58,130 +110,144 @@ public class CursoEditar extends javax.swing.JFrame {
         lblTextoNome.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblTextoNome.setText("Nome");
 
-        lblTextoId.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
-        lblTextoId.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblTextoId.setText("ID : ");
-
-        jLabel1.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
-        jLabel1.setText("Editar Curso");
-
         txtNome.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
-
-        txtId.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
-        txtId.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtIdActionPerformed(evt);
-            }
-        });
 
         txtCodigo.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
 
-        btnSalvar.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
-        btnSalvar.setText("Salvar");
-        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSalvarActionPerformed(evt);
-            }
-        });
+        lblTextoEditarCurso.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
+        lblTextoEditarCurso.setText("Editar Curso");
 
-        btnCancelar.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
-        btnCancelar.setText("Cancelar");
-        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelarActionPerformed(evt);
-            }
-        });
-
-        radioBtnAtivo.setText("Ativo");
-
-        radioBtnInativo.setText("Inativo");
-        radioBtnInativo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioBtnInativoActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout panelMainLayout = new javax.swing.GroupLayout(panelMain);
-        panelMain.setLayout(panelMainLayout);
-        panelMainLayout.setHorizontalGroup(
-            panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelMainLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(lblTextoStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblTextoCodigo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
-                    .addComponent(lblTextoNome, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblTextoId, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(panelMainLayout.createSequentialGroup()
-                            .addComponent(btnCancelar)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnSalvar))
-                        .addGroup(panelMainLayout.createSequentialGroup()
-                            .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(panelMainLayout.createSequentialGroup()
-                                    .addComponent(radioBtnAtivo, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(radioBtnInativo, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGap(2, 2, 2))))
-                .addContainerGap(74, Short.MAX_VALUE))
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(lblTextoEditarCurso)
+                .addGap(115, 115, 115))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(94, 94, 94)
+                        .addComponent(btnCancelar)
+                        .addGap(59, 59, 59)
+                        .addComponent(btnSalvarAlteracoes))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblTextoStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(radioBtnAtivo, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(radioBtnInativo, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblTextoCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblTextoNome))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
-        panelMainLayout.setVerticalGroup(
-            panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelMainLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
-                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblTextoId)
-                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(lblTextoEditarCurso)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(lblTextoNome)
                     .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblTextoCodigo)
-                    .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblTextoCodigo))
+                .addGap(21, 21, 21)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblTextoStatus)
                     .addComponent(radioBtnAtivo)
                     .addComponent(radioBtnInativo))
-                .addGap(81, 81, 81)
-                .addGroup(panelMainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSalvar)
-                    .addComponent(btnCancelar))
-                .addGap(20, 20, 20))
+                .addGap(41, 41, 41)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnCancelar)
+                    .addComponent(btnSalvarAlteracoes))
+                .addGap(37, 37, 37))
         );
-
-        getContentPane().add(panelMain, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 400, 330));
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtIdActionPerformed
+    /**
+    * Método acionado quando o botão "Salvar Alterações" é clicado.
+    * 
+    * <p>Este método realiza as validações necessárias para garantir que todos os campos estejam preenchidos,
+    * e, caso estejam, cria um novo objeto {@link Curso} com os dados modificados, incluindo o ID do curso a ser
+    * editado. Após isso, o curso é atualizado no banco de dados com a ajuda da classe {@link CursoUpdate}.</p>
+    * 
+    * <p>Se algum campo estiver vazio ou se o status do curso não for selecionado, uma mensagem de alerta será exibida.</p>
+    * 
+    * <p>Se a ed ição for bem-sucedida, uma mensagem de confirmação será exibida.</p>
+    */
+    private void btnSalvarAlteracoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarAlteracoesActionPerformed
+        if (txtNome.getText().equals("") || 
+                txtCodigo.getText().equals("") || 
+                (!radioBtnAtivo.isSelected() && !radioBtnInativo.isSelected())) 
+        {
+            JOptionPane.showMessageDialog(
+            null, "Existem campos vazios, preencha todos e tente novamente!",
+            "Alerta", JOptionPane.WARNING_MESSAGE);
+        } else {
+            Curso curso = new Curso();
+            curso.setId(idItemEditar);
+            curso.setNome(txtNome.getText());
+            curso.setCodigoCurso(txtCodigo.getText());
+            if (radioBtnAtivo.isSelected()) {
+                curso.setAtivo(true);
+            } else {
+                curso.setAtivo(false);
+            }
+            CursoUpdate.update(curso);
+            JOptionPane.showMessageDialog(
+            null, "Curso Editado com Sucesso!",
+            "Salvo", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_btnSalvarAlteracoesActionPerformed
 
-    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSalvarActionPerformed
-
+    /**
+    * Método responsável por tratar o evento de clique no botão "Cancelar" da interface gráfica.
+    * 
+    * <p>Este método limpa todos os campos de entrada do formulário, incluindo o campo de texto para o nome 
+    * e código do curso, além de desmarcar a seleção do status de ativo/inativo. A escolha do status é 
+    * desfeita ao limpar o botão de seleção de radio e ao desmarcar o grupo de botões de status.</p>
+    * 
+    * @param evt O evento de ação gerado pelo clique no botão "Cancelar".
+    */
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        // TODO add your handling code here:
+        txtNome.setText(""); 
+        txtCodigo.setText("");
+        radioBtnAtivo.setSelected(false);
+        btnGroupStatus.clearSelection();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void radioBtnInativoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioBtnInativoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_radioBtnInativoActionPerformed
+
+    /**
+    * Método responsável por tratar o evento de fechamento da janela.
+    * 
+    * <p>Este método é chamado quando a janela da aplicação é fechada. Ele verifica se a instância da classe 
+    * {@link CursoListar} está disponível e, caso esteja, chama o método {@link CursoListar#updateTable} para 
+    * atualizar a tabela de cursos exibida na interface gráfica.</p>
+    * 
+    * @param evt O evento de janela que ocorre quando a janela é fechada.
+    */
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        if (this.curso != null) {
+            this.curso.updateTable();
+        }
+    }//GEN-LAST:event_formWindowClosed
 
     /**
      * @param args the command line arguments
@@ -221,17 +287,15 @@ public class CursoEditar extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
-    private javax.swing.JButton btnSalvar;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.ButtonGroup btnGroupStatus;
+    private javax.swing.JButton btnSalvarAlteracoes;
     private javax.swing.JLabel lblTextoCodigo;
-    private javax.swing.JLabel lblTextoId;
+    private javax.swing.JLabel lblTextoEditarCurso;
     private javax.swing.JLabel lblTextoNome;
     private javax.swing.JLabel lblTextoStatus;
-    private javax.swing.JPanel panelMain;
     private javax.swing.JRadioButton radioBtnAtivo;
     private javax.swing.JRadioButton radioBtnInativo;
     private javax.swing.JTextField txtCodigo;
-    private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtNome;
     // End of variables declaration//GEN-END:variables
 }
