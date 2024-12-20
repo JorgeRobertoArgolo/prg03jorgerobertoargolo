@@ -4,15 +4,9 @@
  */
 package br.com.ifba.curso.view;
 
-import br.com.ifba.curso.CursoDelete;
-import br.com.ifba.curso.CursoFind;
-import br.com.ifba.curso.CursoSave;
-import br.com.ifba.curso.CursoUpdate;
-import br.com.ifba.curso.JPQL;
+import br.com.ifba.curso.dao.CursoDao;
+import br.com.ifba.curso.dao.CursoIDao;
 import br.com.ifba.curso.entity.Curso;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import java.awt.event.WindowEvent;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -39,6 +33,14 @@ public class CursoListar extends javax.swing.JFrame {
      */
     private int linhaSelecionada;
     
+    /** 
+    * Objeto de acesso a dados (DAO) para a entidade {@link Curso}.
+    * 
+    * Inicializado com uma implementação de {@link CursoDao}, permite realizar
+    * operações de persistência específicas para a entidade {@link Curso}.
+    */
+    CursoIDao cursoDao = new CursoDao();
+    
     /**
      * Construtor padrão da classe. Inicializa os componentes da interface e a tabela.
      */
@@ -50,11 +52,12 @@ public class CursoListar extends javax.swing.JFrame {
      /**
      * Inicializa a tabela preenchendo-a com os dados de todos os cursos armazenados no banco.
      * 
-     * <p>O método utiliza o serviço {@link JPQL#listAll()} para buscar todos os cursos
-     * e os insere no modelo da tabela.</p>
+     * Este método recupera todos os cursos usando o método {@code findAll()} de 
+     * {@link CursoIDao}, e preenche a tabela com os dados de cada curso. 
+     * Após preencher os dados, o modelo da tabela é atualizado para exibir as informações.
      */
     public void initTable () {
-        List<Curso> cursos = JPQL.listAll();
+        List<Curso> cursos = cursoDao.findAll();
         for (Curso curso : cursos) {
             tabela.addRow(new Object[]{curso.getId(), curso.getNome(), curso.getCodigoCurso(), curso.isAtivo()});
         }
@@ -65,17 +68,38 @@ public class CursoListar extends javax.swing.JFrame {
      * Atualiza os dados da tabela, garantindo que as informações exibidas estejam sincronizadas
      * com os dados do banco de dados.
      * 
-     * <p>O método limpa todas as linhas existentes na tabela e recarrega os dados chamando 
-     * novamente {@link JPQL#listAll()}.</p>
-     */
+     * Este método limpa a tabela atual (removendo todas as linhas) e recarrega as informações 
+     * de todos os cursos cadastrados no banco de dados, utilizando o método {@code findAll()} 
+     * de {@link CursoIDao}.
+     * Após atualizar os dados, o modelo da tabela é configurado novamente para refletir 
+     * as informações mais recentes.
+    */
     public void updateTable () {
         tabela.setRowCount(0);
-        
-        List<Curso> cursos = JPQL.listAll();
+        List<Curso> cursos = cursoDao.findAll();
         for (Curso curso : cursos) {
             tabela.addRow(new Object[]{curso.getId(), curso.getNome(), curso.getCodigoCurso(), curso.isAtivo()});
         }
         tableCurso.setModel(tabela);
+    }
+    
+    /**
+    * Atualiza a tabela de cursos com os resultados da busca por nome.
+    * 
+    * Este método realiza uma busca por cursos com base no nome fornecido. A lista de cursos retornada
+    * pelo método {@code cursoDao.findByNome(nome)} é utilizada para atualizar a tabela na interface gráfica.
+    *
+    * @param nome O nome do curso a ser buscado, utilizado para realizar a pesquisa no banco de dados.
+    */
+    public void updataTableBySearchNome(String nome) {
+        List<Curso> cursos = cursoDao.findByNome(nome);
+        if (cursos != null) {
+            tabela.setRowCount(0);
+            for (Curso curso : cursos) {
+                tabela.addRow(new Object[]{curso.getId(), curso.getNome(), curso.getCodigoCurso(), curso.isAtivo()});
+            }
+            tableCurso.setModel(tabela);
+        }
     }
 
     /**
@@ -96,7 +120,6 @@ public class CursoListar extends javax.swing.JFrame {
         lblLinhaSelecionada = new javax.swing.JLabel();
         txtProcurar = new javax.swing.JTextField();
         lblTextoBuscarCurso = new javax.swing.JLabel();
-        btnBuscar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -153,14 +176,7 @@ public class CursoListar extends javax.swing.JFrame {
         });
 
         lblTextoBuscarCurso.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        lblTextoBuscarCurso.setText("Informe o ID do Curso");
-
-        btnBuscar.setText("Buscar");
-        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarActionPerformed(evt);
-            }
-        });
+        lblTextoBuscarCurso.setText("Informe o Nome do Curso");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -172,10 +188,8 @@ public class CursoListar extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblTextoBuscarCurso)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtProcurar, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtProcurar, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(btnBuscar)
-                        .addGap(22, 22, 22)
                         .addComponent(lblTextoLinhaSelecionada)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lblLinhaSelecionada, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -198,8 +212,7 @@ public class CursoListar extends javax.swing.JFrame {
                             .addComponent(lblTextoLinhaSelecionada)
                             .addComponent(lblLinhaSelecionada)
                             .addComponent(lblTextoBuscarCurso)
-                            .addComponent(txtProcurar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnBuscar))
+                            .addComponent(txtProcurar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(45, 45, 45)
                         .addComponent(btnAdicionar)
                         .addGap(51, 51, 51)
@@ -217,17 +230,16 @@ public class CursoListar extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     /**
-    * Método acionado ao clicar no botão "Remover". 
+    * Método chamado ao clicar no botão "Remover" para excluir um curso selecionado.
     * 
-    * <p>Este método realiza as seguintes etapas:</p>
-    * <ul>
-    *   <li>Verifica se uma linha da tabela foi selecionada.</li>
-    *   <li>Exibe uma mensagem de confirmação para o usuário.</li>
-    *   <li>Se confirmado, exclui o curso com base no ID selecionado e atualiza a tabela.</li>
-    *   <li>Notifica o usuário com mensagens de sucesso, erro ou cancelamento.</li>
-    * </ul>
+    * Este método verifica se uma linha da tabela foi selecionada. Caso contrário, exibe uma mensagem de alerta.
+    * Se uma linha for selecionada, o usuário é solicitado a confirmar a exclusão do curso. Se a resposta for 
+    * afirmativa, os dados do curso selecionado são recuperados da tabela, um objeto {@link Curso} é criado com 
+    * essas informações, e o curso é removido do banco de dados utilizando o método {@code delete()} de {@code cursoDao}.
+    * Após a exclusão, uma mensagem de sucesso é exibida, e a tabela é atualizada para refletir a remoção.
+    * Caso o usuário cancele a operação, uma mensagem de cancelamento é mostrada.
     * 
-    * @param evt Evento acionado pela interface ao clicar no botão "Remover".
+    * @param evt o evento acionado pelo clique no botão "Remover".
     */
     private void btnRemoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoverActionPerformed
         // TODO add your handling code here:
@@ -237,8 +249,14 @@ public class CursoListar extends javax.swing.JFrame {
             "Alerta", JOptionPane.WARNING_MESSAGE);
             
             if (resposta == JOptionPane.YES_OPTION) {
-                long idItem = (long) tabela.getValueAt(linhaSelecionada, 0);
-                CursoDelete.delete(idItem);
+                Curso curso = new Curso();
+                curso.setId((long) tabela.getValueAt(linhaSelecionada, 0));
+                curso.setNome((String) tabela.getValueAt(linhaSelecionada, 1));
+                curso.setCodigoCurso((String) tabela.getValueAt(linhaSelecionada, 2));
+                curso.setAtivo((boolean) tabela.getValueAt(linhaSelecionada, 3));
+                
+                cursoDao.delete(curso);
+                
                 JOptionPane.showMessageDialog(
                 null, "Curso Excluido!",
                 "Notificação", JOptionPane.INFORMATION_MESSAGE);
@@ -269,15 +287,12 @@ public class CursoListar extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAdicionarActionPerformed
 
     /**
-    * Método acionado ao clicar em uma linha da tabela de cursos.
+    * Método chamado quando o usuário clica em uma linha da tabela
     * 
-    * <p>Este método realiza as seguintes operações:</p>
-    * <ul>
-    *   <li>Obtém o índice da linha selecionada na tabela.</li>
-    *   <li>Atualiza o rótulo (label) com o número da linha selecionada, ajustado para iniciar em 1.</li>
-    * </ul>
+    * Este método captura o índice da linha selecionada na tabela e armazena no atributo {@code linhaSelecionada}.
+    * Além disso, atualiza o rótulo {@link lblLinhaSelecionada} para exibir o número da linha selecionada (começando de 1).
     * 
-    * @param evt Evento do tipo {@code MouseEvent} acionado pelo clique do mouse.
+    * @param evt o evento acionado pelo clique do usuário na tabela.
     */
     private void tableCursoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableCursoMouseClicked
         linhaSelecionada = tableCurso.getSelectedRow();
@@ -287,14 +302,14 @@ public class CursoListar extends javax.swing.JFrame {
     /**
     * Método acionado ao clicar no botão de editar.
     * 
-    * <p>Este método realiza as seguintes operações:</p>
-    * <ul>
-    *   <li>Verifica se há uma linha selecionada na tabela.</li>
-    *   <li>Se uma linha for selecionada, obtém o ID do curso da linha selecionada e abre a janela de edição do curso.</li>
-    *   <li>Se nenhuma linha for selecionada, exibe uma mensagem de alerta informando o usuário.</li>
-    * </ul>
+    * Este método verifica se uma linha da tabela foi selecionada. Caso contrário, exibe uma mensagem de alerta.
+    * Se uma linha for selecionada, o método recupera o ID do curso a partir da linha selecionada na tabela, 
+    * e abre a janela de edição de curso ( {@link CursoEditar} ), passando o ID do curso para que o curso 
+    * correto seja carregado para edição.
     * 
-    * @param evt Evento do tipo {@code ActionEvent} acionado ao clicar no botão de editar.
+    * Se nenhum curso for selecionado, uma mensagem de alerta é exibida ao usuário.
+    * 
+    * @param evt o evento acionado pelo clique no botão "Editar".
     */
     private void btnAEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAEditarActionPerformed
         if (linhaSelecionada >= 0) {
@@ -308,60 +323,26 @@ public class CursoListar extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnAEditarActionPerformed
 
+    /**
+    * Evento disparado quando uma tecla é pressionada no campo de busca para filtrar cursos por nome.
+    * 
+    * Este método é acionado sempre que uma tecla é pressionada no campo de texto {@code txtProcurar}.
+    * Ele verifica o texto inserido e, se o campo não estiver vazio, realiza uma busca por cursos cujo nome
+    * corresponda ao texto digitado, atualizando a tabela com os resultados.
+    *
+    * @param evt O evento de pressionamento de tecla, que contém as informações da tecla pressionada.
+    */
     private void txtProcurarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtProcurarKeyPressed
-        // TODO add your handling code here:
+        String nome = txtProcurar.getText();
+        if (!nome.equals("")) {
+            updataTableBySearchNome(nome);
+        } else {
+            updateTable();
+        }
     }//GEN-LAST:event_txtProcurarKeyPressed
 
-    /**
-    * Evento acionado quando o botão de busca é pressionado.
-    * 
-    * <p>Este método realiza as seguintes operações:</p>
-    * <ul>
-    *   <li>Obtém o ID do curso a partir do campo de texto {@code txtProcurar}.</li>
-    *   <li>Tenta encontrar o curso correspondente no banco de dados utilizando o método {@code CursoFind.find(id)}.</li>
-    *   <li>Se o curso for encontrado, exibe uma caixa de diálogo mostrando os detalhes do curso, como ID, nome, código e status.</li>
-    *   <li>Se o curso não for encontrado, exibe uma mensagem de alerta informando que o curso não foi encontrado.</li>
-    * </ul>
-    * 
-    * @param evt O evento de clique do botão que acionou o método.
-    */
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // TODO add your handling code here:
-        long id = Integer.parseInt(txtProcurar.getText());
-        Curso curso = CursoFind.find(id);
-        if (curso != null) {
-            JOptionPane.showMessageDialog(
-                null, "Curso Encontrado\n" + 
-                        "\nID : " + curso.getId() +
-                        "\nNome : " + curso.getNome() +
-                        "\nCodigo Curso : " + curso.getCodigoCurso() +
-                        "\nStatus : " + curso.isAtivo(),
-                "Encontrado", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(
-                null, "Curso Nao Encontrado",
-                "Encontrado", JOptionPane.WARNING_MESSAGE);
-        }
-    }//GEN-LAST:event_btnBuscarActionPerformed
-
-    /**
-    * Evento acionado quando a janela está prestes a ser fechada.
-    * 
-    * <p>Este método realiza as seguintes operações:</p>
-    * <ul>
-    *   <li>Fecha a {@code EntityManagerFactory} de todos os módulos relacionados à persistência de dados.</li>
-    *   <li>Chama o método {@code closeEntityManagerFactory} das classes {@code CursoSave}, {@code CursoDelete}, {@code CursoFind}, 
-    *       {@code CursoUpdate} e {@code JPQL} para garantir que os recursos do gerenciador de entidades sejam liberados corretamente.</li>
-    * </ul>
-    * 
-    * @param evt O evento de fechamento da janela.
-    */
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        CursoSave.closeEntityManagerFactory();
-        CursoDelete.closeEntityManagerFactory();
-        CursoFind.closeEntityManagerFactory();
-        CursoUpdate.closeEntityManagerFactory();
-        JPQL.closeEntityManagerFactory();
+        
     }//GEN-LAST:event_formWindowClosing
 
     /**
@@ -402,7 +383,6 @@ public class CursoListar extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAEditar;
     private javax.swing.JButton btnAdicionar;
-    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnRemover;
     private javax.swing.JLabel lblLinhaSelecionada;
     private javax.swing.JLabel lblTextoBuscarCurso;

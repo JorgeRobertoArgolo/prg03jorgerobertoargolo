@@ -4,7 +4,8 @@
  */
 package br.com.ifba.curso.view;
 
-import br.com.ifba.curso.CursoSave;
+import br.com.ifba.curso.dao.CursoDao;
+import br.com.ifba.curso.dao.CursoIDao;
 import br.com.ifba.curso.entity.Curso;
 import java.awt.event.WindowEvent;
 import javax.swing.JOptionPane;
@@ -17,9 +18,18 @@ public class CursoCadastro extends javax.swing.JFrame {
     
     /**
      * Instância da classe {@code CursoListar}, responsável pela listagem de cursos.
+     * 
      * Esta instância é utilizada para atualizar a lista de cursos exibida após o cadastro ou edição de um curso.
      */
     private CursoListar curso;
+    
+    /** 
+    * Objeto de acesso a dados (DAO) para a entidade {@link Curso}.
+    * 
+    * Inicializado com uma implementação de {@link CursoDao}, permite realizar
+    * operações de persistência específicas para a entidade {@link Curso}.
+    */
+    private CursoIDao cursoDao = new CursoDao();
     
     /**
      * Creates new form CursoCadastro
@@ -179,16 +189,14 @@ public class CursoCadastro extends javax.swing.JFrame {
     /**
     * Método responsável por tratar o evento de clique no botão "Salvar" da interface gráfica.
     * 
-    * <p>Este método realiza a validação dos campos de entrada, garantindo que todos os dados necessários 
-    * (nome, código do curso e status de ativo/inativo) estejam preenchidos. Se algum campo estiver vazio 
-    * ou se o status não for selecionado, uma mensagem de alerta é exibida.</p>
+     * Verifica se os campos obrigatórios (nome, código e status do curso) estão preenchidos. 
+    * Caso algum campo esteja vazio, exibe uma mensagem de alerta ao usuário. 
+    * Se todos os campos estiverem preenchidos, cria um objeto {@link Curso}, preenche seus 
+    * atributos com os dados informados e salva o curso no banco de dados usando {@code cursoDao}.
+    * Após salvar, exibe uma mensagem de sucesso ao usuário.
     * 
-    * <p>Se todos os campos estiverem corretamente preenchidos, o método cria um novo objeto {@code Curso},
-    * configura seus atributos a partir dos dados fornecidos na interface e o persiste no banco de dados 
-    * utilizando o método {@code CursoSave.save(curso)}. Após a operação, uma mensagem de sucesso é exibida.</p>
-    * 
-    * @param evt O evento de ação gerado pelo clique no botão "Salvar".
-    */
+    * @param evt o evento acionado pelo clique no botão "Salvar".
+ */
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         if (txtNome.getText().equals("") || 
                 txtCodigo.getText().equals("") || 
@@ -206,7 +214,9 @@ public class CursoCadastro extends javax.swing.JFrame {
             } else {
                 curso.setAtivo(false);
             }
-            CursoSave.save(curso);
+            
+            cursoDao.save(curso);
+            
             JOptionPane.showMessageDialog(
             null, "Curso Cadastrado com Sucesso!",
             "Salvo", JOptionPane.INFORMATION_MESSAGE);
@@ -216,9 +226,7 @@ public class CursoCadastro extends javax.swing.JFrame {
     /**
     * Método responsável por tratar o evento de clique no botão "Cancelar" da interface gráfica.
     * 
-    * <p>Este método limpa todos os campos de entrada do formulário, incluindo o campo de texto para o nome 
-    * e código do curso, além de desmarcar a seleção do status de ativo/inativo. A escolha do status é 
-    * desfeita ao limpar o botão de seleção de radio e ao desmarcar o grupo de botões de status.</p>
+    * Este método limpa todos os campos de entrada do formulário
     * 
     * @param evt O evento de ação gerado pelo clique no botão "Cancelar".
     */
@@ -237,9 +245,9 @@ public class CursoCadastro extends javax.swing.JFrame {
     /**
     * Método responsável por tratar o evento de fechamento da janela.
     * 
-    * <p>Este método é chamado quando a janela da aplicação é fechada. Ele verifica se a instância da classe 
+    * Este método é chamado quando a janela da aplicação é fechada. Ele verifica se a instância da classe 
     * {@link CursoListar} está disponível e, caso esteja, chama o método {@link CursoListar#updateTable} para 
-    * atualizar a tabela de cursos exibida na interface gráfica.</p>
+    * atualizar a tabela de cursos exibida na interface gráfica.
     * 
     * @param evt O evento de janela que ocorre quando a janela é fechada.
     */

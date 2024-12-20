@@ -4,8 +4,8 @@
  */
 package br.com.ifba.curso.view;
 
-import br.com.ifba.curso.CursoSave;
-import br.com.ifba.curso.CursoUpdate;
+import br.com.ifba.curso.dao.CursoDao;
+import br.com.ifba.curso.dao.CursoIDao;
 import br.com.ifba.curso.entity.Curso;
 import java.awt.event.WindowEvent;
 import javax.swing.JOptionPane;
@@ -16,8 +16,25 @@ import javax.swing.JOptionPane;
  */
 public class CursoEditar extends javax.swing.JFrame {
     
+    /**
+     * Instância da classe {@code CursoListar}, responsável pela listagem de cursos.
+     * 
+     * Esta instância é utilizada para atualizar a lista de cursos exibida após o cadastro ou edição de um curso.
+     */
     private CursoListar curso;
+    
+    /*
+     * Id do item que deve ser editado
+     */
     private long idItemEditar;
+    
+    /** 
+    * Objeto de acesso a dados (DAO) para a entidade {@link Curso}.
+    * 
+    * Inicializado com uma implementação de {@link CursoDao}, permite realizar
+    * operações de persistência específicas para a entidade {@link Curso}.
+    */
+    CursoIDao cursoDao = new CursoDao();
     
     /**
      * Creates new form CursoCadastro
@@ -29,9 +46,9 @@ public class CursoEditar extends javax.swing.JFrame {
     /**
     * Construtor da classe CursoEditar.
     * 
-    * <p>Este construtor é utilizado para inicializar a interface gráfica de edição de um curso. Ele recebe
+    * Este construtor é utilizado para inicializar a interface gráfica de edição de um curso. Ele recebe
     * como parâmetros uma instância da classe {@link CursoListar}, que será utilizada para atualizar a tabela
-    * após a edição, e o ID do curso a ser editado, {@code idItemEditar}, que identifica o curso no banco de dados.</p>
+    * após a edição, e o ID do curso a ser editado, {@code idItemEditar}, que identifica o curso no banco de dados.
     * 
     * @param curso A instância da classe {@link CursoListar} que permite atualizar a tabela de cursos.
     * @param idItemEditar O ID do curso que será editado.
@@ -181,13 +198,15 @@ public class CursoEditar extends javax.swing.JFrame {
     /**
     * Método acionado quando o botão "Salvar Alterações" é clicado.
     * 
-    * <p>Este método realiza as validações necessárias para garantir que todos os campos estejam preenchidos,
-    * e, caso estejam, cria um novo objeto {@link Curso} com os dados modificados, incluindo o ID do curso a ser
-    * editado. Após isso, o curso é atualizado no banco de dados com a ajuda da classe {@link CursoUpdate}.</p>
+    * Verifica se os campos obrigatórios (nome, código e status do curso) estão preenchidos. 
+    * Caso algum campo esteja vazio, exibe uma mensagem de alerta ao usuário. 
+    * Se todos os campos estiverem preenchidos, cria um objeto {@link Curso}, preenche seus 
+    * atributos com os dados informados (incluindo o ID do curso a ser editado) e atualiza 
+    * as informações do curso no banco de dados usando {@code cursoDao}.
     * 
-    * <p>Se algum campo estiver vazio ou se o status do curso não for selecionado, uma mensagem de alerta será exibida.</p>
+    * Após salvar as alterações, exibe uma mensagem de sucesso ao usuário.
     * 
-    * <p>Se a ed ição for bem-sucedida, uma mensagem de confirmação será exibida.</p>
+    * @param evt o evento acionado pelo clique no botão "Salvar Alterações".
     */
     private void btnSalvarAlteracoesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarAlteracoesActionPerformed
         if (txtNome.getText().equals("") || 
@@ -207,19 +226,17 @@ public class CursoEditar extends javax.swing.JFrame {
             } else {
                 curso.setAtivo(false);
             }
-            CursoUpdate.update(curso);
+            cursoDao.update(curso);
             JOptionPane.showMessageDialog(
             null, "Curso Editado com Sucesso!",
             "Salvo", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnSalvarAlteracoesActionPerformed
 
-    /**
+     /**
     * Método responsável por tratar o evento de clique no botão "Cancelar" da interface gráfica.
     * 
-    * <p>Este método limpa todos os campos de entrada do formulário, incluindo o campo de texto para o nome 
-    * e código do curso, além de desmarcar a seleção do status de ativo/inativo. A escolha do status é 
-    * desfeita ao limpar o botão de seleção de radio e ao desmarcar o grupo de botões de status.</p>
+    * Este método limpa todos os campos de entrada do formulário
     * 
     * @param evt O evento de ação gerado pelo clique no botão "Cancelar".
     */
@@ -237,9 +254,9 @@ public class CursoEditar extends javax.swing.JFrame {
     /**
     * Método responsável por tratar o evento de fechamento da janela.
     * 
-    * <p>Este método é chamado quando a janela da aplicação é fechada. Ele verifica se a instância da classe 
+    * Este método é chamado quando a janela da aplicação é fechada. Ele verifica se a instância da classe 
     * {@link CursoListar} está disponível e, caso esteja, chama o método {@link CursoListar#updateTable} para 
-    * atualizar a tabela de cursos exibida na interface gráfica.</p>
+    * atualizar a tabela de cursos exibida na interface gráfica.
     * 
     * @param evt O evento de janela que ocorre quando a janela é fechada.
     */

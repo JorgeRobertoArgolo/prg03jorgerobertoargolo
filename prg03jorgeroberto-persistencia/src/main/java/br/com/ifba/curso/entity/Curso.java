@@ -4,17 +4,14 @@
  */
 package br.com.ifba.curso.entity;
 
+import br.com.ifba.infrastructure.entity.PersistenceEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
-
-/**
- *
- * @author rober
- */
+import java.io.Serializable;
 
 /**
  * Representa a entidade "Curso" mapeada para a tabela "cursos" no banco de dados.
@@ -22,12 +19,7 @@ import jakarta.persistence.Column;
  */
 @Entity
 @Table(name = "cursos")
-public class Curso {
-    
-    // Identificador único da entidade, gerado automaticamente
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+public class Curso extends PersistenceEntity implements Serializable{
     
     // Coluna "nome" na tabela, não pode ser nula
     @Column (name = "nome", nullable = false)
@@ -40,14 +32,6 @@ public class Curso {
     // Coluna "ativo" na tabela, indica se o curso está ativo
     @Column (name = "ativo")
     private boolean ativo;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getNome() {
         return nome;
