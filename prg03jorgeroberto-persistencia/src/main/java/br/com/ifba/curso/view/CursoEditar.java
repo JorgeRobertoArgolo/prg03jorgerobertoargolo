@@ -4,8 +4,8 @@
  */
 package br.com.ifba.curso.view;
 
-import br.com.ifba.curso.dao.CursoDao;
-import br.com.ifba.curso.dao.CursoIDao;
+import br.com.ifba.curso.controller.CursoController;
+import br.com.ifba.curso.controller.CursoIController;
 import br.com.ifba.curso.entity.Curso;
 import java.awt.event.WindowEvent;
 import javax.swing.JOptionPane;
@@ -34,7 +34,7 @@ public class CursoEditar extends javax.swing.JFrame {
     * Inicializado com uma implementação de {@link CursoDao}, permite realizar
     * operações de persistência específicas para a entidade {@link Curso}.
     */
-    CursoIDao cursoDao = new CursoDao();
+    CursoIController cursoController = new CursoController();
     
     /**
      * Creates new form CursoCadastro
@@ -226,7 +226,7 @@ public class CursoEditar extends javax.swing.JFrame {
             } else {
                 curso.setAtivo(false);
             }
-            cursoDao.update(curso);
+            cursoController.update(curso);
             JOptionPane.showMessageDialog(
             null, "Curso Editado com Sucesso!",
             "Salvo", JOptionPane.INFORMATION_MESSAGE);

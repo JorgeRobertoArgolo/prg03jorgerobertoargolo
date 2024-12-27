@@ -4,8 +4,8 @@
  */
 package br.com.ifba.curso.view;
 
-import br.com.ifba.curso.dao.CursoDao;
-import br.com.ifba.curso.dao.CursoIDao;
+import br.com.ifba.curso.controller.CursoController;
+import br.com.ifba.curso.controller.CursoIController;
 import br.com.ifba.curso.entity.Curso;
 import java.awt.event.WindowEvent;
 import javax.swing.JOptionPane;
@@ -29,7 +29,7 @@ public class CursoCadastro extends javax.swing.JFrame {
     * Inicializado com uma implementação de {@link CursoDao}, permite realizar
     * operações de persistência específicas para a entidade {@link Curso}.
     */
-    private CursoIDao cursoDao = new CursoDao();
+    CursoIController cursoController = new CursoController();
     
     /**
      * Creates new form CursoCadastro
@@ -215,7 +215,7 @@ public class CursoCadastro extends javax.swing.JFrame {
                 curso.setAtivo(false);
             }
             
-            cursoDao.save(curso);
+            cursoController.save(curso);
             
             JOptionPane.showMessageDialog(
             null, "Curso Cadastrado com Sucesso!",

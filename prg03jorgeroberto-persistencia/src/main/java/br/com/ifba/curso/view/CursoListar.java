@@ -4,8 +4,8 @@
  */
 package br.com.ifba.curso.view;
 
-import br.com.ifba.curso.dao.CursoDao;
-import br.com.ifba.curso.dao.CursoIDao;
+import br.com.ifba.curso.controller.CursoController;
+import br.com.ifba.curso.controller.CursoIController;
 import br.com.ifba.curso.entity.Curso;
 import java.awt.event.WindowEvent;
 import java.util.List;
@@ -33,13 +33,7 @@ public class CursoListar extends javax.swing.JFrame {
      */
     private int linhaSelecionada;
     
-    /** 
-    * Objeto de acesso a dados (DAO) para a entidade {@link Curso}.
-    * 
-    * Inicializado com uma implementação de {@link CursoDao}, permite realizar
-    * operações de persistência específicas para a entidade {@link Curso}.
-    */
-    CursoIDao cursoDao = new CursoDao();
+    CursoIController cursoController = new CursoController();
     
     /**
      * Construtor padrão da classe. Inicializa os componentes da interface e a tabela.
@@ -57,7 +51,7 @@ public class CursoListar extends javax.swing.JFrame {
      * Após preencher os dados, o modelo da tabela é atualizado para exibir as informações.
      */
     public void initTable () {
-        List<Curso> cursos = cursoDao.findAll();
+        List<Curso> cursos = cursoController.findAll();
         for (Curso curso : cursos) {
             tabela.addRow(new Object[]{curso.getId(), curso.getNome(), curso.getCodigoCurso(), curso.isAtivo()});
         }
@@ -76,7 +70,7 @@ public class CursoListar extends javax.swing.JFrame {
     */
     public void updateTable () {
         tabela.setRowCount(0);
-        List<Curso> cursos = cursoDao.findAll();
+        List<Curso> cursos = cursoController.findAll();
         for (Curso curso : cursos) {
             tabela.addRow(new Object[]{curso.getId(), curso.getNome(), curso.getCodigoCurso(), curso.isAtivo()});
         }
@@ -92,7 +86,7 @@ public class CursoListar extends javax.swing.JFrame {
     * @param nome O nome do curso a ser buscado, utilizado para realizar a pesquisa no banco de dados.
     */
     public void updataTableBySearchNome(String nome) {
-        List<Curso> cursos = cursoDao.findByNome(nome);
+        List<Curso> cursos = cursoController.findByNome(nome);
         if (cursos != null) {
             tabela.setRowCount(0);
             for (Curso curso : cursos) {
@@ -255,7 +249,7 @@ public class CursoListar extends javax.swing.JFrame {
                 curso.setCodigoCurso((String) tabela.getValueAt(linhaSelecionada, 2));
                 curso.setAtivo((boolean) tabela.getValueAt(linhaSelecionada, 3));
                 
-                cursoDao.delete(curso);
+                cursoController.delete(curso);
                 
                 JOptionPane.showMessageDialog(
                 null, "Curso Excluido!",
