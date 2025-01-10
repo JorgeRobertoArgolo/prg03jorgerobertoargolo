@@ -67,9 +67,18 @@ public interface CursoIService {
     /**
      * Busca cursos com base no nome fornecido.
      * 
-     * @param nome o nome (ou parte do nome) dos cursos a serem buscados.
+     * @param nome o nome dos cursos a serem buscados.
      * @return uma lista de cursos correspondentes ao nome fornecido.
      * @throws RuntimeException se ocorrer algum erro durante a operação.
      */
     public abstract List<Curso> findByNome(String nome) throws RuntimeException;
+    
+    /**
+     * Busca cursos com base no nome fornecido e ignora o case
+     * 
+     * @param nome o nome (ou parte do nome) dos cursos a serem buscados.
+     * @return uma lista de cursos correspondentes ao nome fornecido.
+     * @throws RuntimeException se ocorrer algum erro durante a operação.
+     */
+    public abstract List<Curso> findByNomeLikeIgnoreCase(String nome) throws RuntimeException;
 }

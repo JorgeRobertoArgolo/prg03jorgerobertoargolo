@@ -4,8 +4,7 @@
  */
 package br.com.ifba.curso.service;
 
-import br.com.ifba.curso.dao.CursoDao;
-import br.com.ifba.curso.dao.CursoIDao;
+import br.com.ifba.curso.repository.CursoRepository;
 import br.com.ifba.curso.entity.Curso;
 import br.com.ifba.infrastructure.util.StringUtil;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,23 +16,23 @@ import org.springframework.stereotype.Service;
  * Implementação do serviço de gerenciamento de cursos.
  * 
  * Esta classe oferece os métodos necessários para realizar operações de CRUD (criação, leitura, atualização e exclusão)
- * sobre a entidade {@link Curso}, utilizando o DAO {@link CursoIDao} para persistência de dados. 
+ * sobre a entidade {@link Curso}
  * As operações incluem a validação de campos essenciais antes de interagir com o banco de dados.
  */
 
 @Service
 public class CursoService implements CursoIService{
     
-    private final CursoIDao cursoDao; 
+    private final CursoRepository cursoRepository; 
     
     @Autowired 
-    public CursoService(CursoIDao cursoDao) {
-        this.cursoDao = cursoDao;
+    public CursoService(CursoRepository cursoRepository) {
+        this.cursoRepository = cursoRepository;
     }
     
     @Override
     public List<Curso> findAll() throws RuntimeException {
-        return cursoDao.findAll();
+        return cursoRepository.findAll();
     }
 
     @Override
@@ -50,7 +49,7 @@ public class CursoService implements CursoIService{
         curso.setNome(StringUtil.trimExtraSpaces(curso.getNome()));
         curso.setCodigoCurso(StringUtil.trimExtraSpaces(curso.getCodigoCurso()));
         
-        cursoDao.save(curso);
+        cursoRepository.save(curso);
     }
 
     @Override
@@ -59,7 +58,7 @@ public class CursoService implements CursoIService{
             throw new RuntimeException ("Dados do Curso nao preenchidos!");
         }
         
-        if (curso.getId() == 0) {
+        if (curso.getId() == null || curso.getId() == 0L) {
             throw new IllegalArgumentException("O Campo ID é invalido!");        
         }
         
@@ -75,7 +74,7 @@ public class CursoService implements CursoIService{
         curso.setNome(StringUtil.trimExtraSpaces(curso.getNome()));
         curso.setCodigoCurso(StringUtil.trimExtraSpaces(curso.getCodigoCurso()));
         
-        cursoDao.update(curso);
+        cursoRepository.save(curso);
     }
 
     @Override
@@ -85,7 +84,7 @@ public class CursoService implements CursoIService{
         }
         
         if (findById(curso.getId()) != null) {
-            cursoDao.delete(curso);
+            cursoRepository.delete(curso);
         } else {
             throw new EntityNotFoundException("Curso não encontrado com o ID: " + curso.getId());
         }
@@ -97,11 +96,16 @@ public class CursoService implements CursoIService{
             throw new RuntimeException ("Curso nao presente no banco de dados!");
         }
         
-        return cursoDao.findById(id);
+        return cursoRepository.findById(id).orElse(null);
     }
 
     @Override
     public List<Curso> findByNome(String nome) throws RuntimeException {
-        return cursoDao.findByNome(nome);
+        return cursoRepository.findByNome(nome);
     } 
+    
+    @Override
+    public List<Curso> findByNomeLikeIgnoreCase(String nome) throws RuntimeException {
+        return cursoRepository.findByNomeLikeIgnoreCase(nome);
+    }
 }

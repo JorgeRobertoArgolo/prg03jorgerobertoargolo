@@ -53,4 +53,9 @@ public class CursoController implements CursoIController{
     public List<Curso> findByNome(String nome) throws RuntimeException {
         return cursoIService.findByNome(nome);
     }
+    
+    @Override
+    public List<Curso> findByNomeLikeIgnoreCase(String nome) throws RuntimeException {
+        return cursoIService.findByNomeLikeIgnoreCase(nome);
+    }
 }

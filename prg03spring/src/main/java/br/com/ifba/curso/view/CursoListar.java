@@ -103,7 +103,7 @@ public class CursoListar extends javax.swing.JFrame {
     * @param nome O nome do curso a ser buscado, utilizado para realizar a pesquisa no banco de dados.
     */
     public void updataTableBySearchNome(String nome) {
-        List<Curso> cursos = cursoController.findByNome(nome);
+        List<Curso> cursos = cursoController.findByNomeLikeIgnoreCase(nome);
         if (cursos != null) {
             tabela.setRowCount(0);
             for (Curso curso : cursos) {
