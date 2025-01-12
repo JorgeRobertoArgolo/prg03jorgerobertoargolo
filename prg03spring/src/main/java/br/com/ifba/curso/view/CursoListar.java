@@ -13,7 +13,7 @@ import java.awt.event.WindowEvent;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Lazy
+@RequiredArgsConstructor
 public class CursoListar extends javax.swing.JFrame {
 
     /**
@@ -33,7 +34,7 @@ public class CursoListar extends javax.swing.JFrame {
      * Modelo da tabela utilizado para exibir os dados dos cursos.
      * Colunas: ID, Nome, Código do Curso e Ativo.
      */
-    private DefaultTableModel tabela = new DefaultTableModel(new Object[]{"ID", "Nome", "Código Curso", "Ativo"}, 0);
+    private final DefaultTableModel tabela = new DefaultTableModel(new Object[]{"ID", "Nome", "Código Curso", "Ativo"}, 0);
     
     /**
      * Armazena a linha selecionada na tabela.
@@ -43,16 +44,10 @@ public class CursoListar extends javax.swing.JFrame {
     /**
      * Variavel responsavel pelo CRUD
      */
-    @Autowired
-    CursoIController cursoController;
+    private final CursoIController cursoController;
     
-    /**
-     * Construtor padrão da classe. Inicializa os componentes da interface e a tabela.
-     */
-    public CursoListar() {
-        if (!GraphicsEnvironment.isHeadless()) { 
-            initComponents(); 
-        }
+    {
+        initComponents();
     }
     
      @PostConstruct 
@@ -738,7 +733,8 @@ public class CursoListar extends javax.swing.JFrame {
        //</editor-fold> 
        /* Create and display the form */ 
        java.awt.EventQueue.invokeLater(() -> {
-            CursoListar cursoListar = new CursoListar();
+           CursoIController CursoController = null;
+            CursoListar cursoListar = new CursoListar(CursoController);
             cursoListar.setVisible(true);
             cursoListar.init();
         });

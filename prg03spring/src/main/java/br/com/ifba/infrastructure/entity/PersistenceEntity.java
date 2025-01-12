@@ -8,6 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Classe base para entidades persistentes.
@@ -20,13 +22,5 @@ public class PersistenceEntity {
     // Identificador único da entidade, gerado automaticamente
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Getter @Setter private Long id;
 }

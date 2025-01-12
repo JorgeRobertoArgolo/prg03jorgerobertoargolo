@@ -9,6 +9,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import java.io.Serializable;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Representa a entidade "Curso" mapeada para a tabela "cursos" no banco de dados.
@@ -16,41 +19,18 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "cursos")
+@NoArgsConstructor
 public class Curso extends PersistenceEntity implements Serializable{
     
     // Coluna "nome" na tabela, não pode ser nula
     @Column (name = "nome", nullable = false)
-    private String nome;
+    @Getter @Setter private String nome;
     
     // Coluna "codigo_curso" na tabela, não pode ser nula e deve ser única
     @Column (name = "codigo_curso", nullable = false, unique = true)
-    private String codigoCurso;
+    @Getter @Setter private String codigoCurso;
     
     // Coluna "ativo" na tabela, indica se o curso está ativo
     @Column (name = "ativo")
-    private boolean ativo;
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCodigoCurso() {
-        return codigoCurso;
-    }
-
-    public void setCodigoCurso(String codigoCurso) {
-        this.codigoCurso = codigoCurso;
-    }
-
-    public boolean isAtivo() {
-        return ativo;
-    }
-
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
-    }
+    @Getter @Setter private boolean ativo;
 }

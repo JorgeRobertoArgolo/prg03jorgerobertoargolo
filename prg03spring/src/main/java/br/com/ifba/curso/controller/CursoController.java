@@ -8,7 +8,7 @@ import br.com.ifba.curso.entity.Curso;
 import br.com.ifba.curso.service.CursoIService;
 import br.com.ifba.curso.service.CursoService;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -19,10 +19,10 @@ import org.springframework.stereotype.Controller;
  * As operações incluem a validação de campos essenciais antes de interagir com o serviço.
  */
 @Controller
+@RequiredArgsConstructor
 public class CursoController implements CursoIController{
 
-    @Autowired
-    private CursoIService cursoIService;  
+    private final CursoIService cursoIService;  
     
     @Override
     public List<Curso> findAll() throws RuntimeException {

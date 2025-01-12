@@ -9,7 +9,8 @@ import br.com.ifba.curso.entity.Curso;
 import br.com.ifba.infrastructure.util.StringUtil;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,15 +21,14 @@ import org.springframework.stereotype.Service;
  * As operações incluem a validação de campos essenciais antes de interagir com o banco de dados.
  */
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class CursoService implements CursoIService{
     
     private final CursoRepository cursoRepository; 
     
-    @Autowired 
-    public CursoService(CursoRepository cursoRepository) {
-        this.cursoRepository = cursoRepository;
-    }
+    //private static final Logger log = LoggerFactory.getLogger(CursoService.class);
     
     @Override
     public List<Curso> findAll() throws RuntimeException {
@@ -48,6 +48,8 @@ public class CursoService implements CursoIService{
         
         curso.setNome(StringUtil.trimExtraSpaces(curso.getNome()));
         curso.setCodigoCurso(StringUtil.trimExtraSpaces(curso.getCodigoCurso()));
+        
+        log.info("Salvando Objeto Curso no Banco!");
         
         cursoRepository.save(curso);
     }
@@ -74,6 +76,8 @@ public class CursoService implements CursoIService{
         curso.setNome(StringUtil.trimExtraSpaces(curso.getNome()));
         curso.setCodigoCurso(StringUtil.trimExtraSpaces(curso.getCodigoCurso()));
         
+        log.info("Atualizando Objeto Curso no Banco!");
+        
         cursoRepository.save(curso);
     }
 
@@ -84,6 +88,7 @@ public class CursoService implements CursoIService{
         }
         
         if (findById(curso.getId()) != null) {
+            log.info("Deletando Objeto Curso no Banco!");
             cursoRepository.delete(curso);
         } else {
             throw new EntityNotFoundException("Curso não encontrado com o ID: " + curso.getId());
@@ -95,7 +100,7 @@ public class CursoService implements CursoIService{
         if (id == null) {
             throw new RuntimeException ("Curso nao presente no banco de dados!");
         }
-        
+        log.info("Buscando Objeto Curso no Banco!");
         return cursoRepository.findById(id).orElse(null);
     }
 
